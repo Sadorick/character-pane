@@ -5,18 +5,22 @@
 
 <style>
 body {
-  background: #0f0f14;
-  color: #ddd;
-  font-family: Arial;
+  background: #0c0c12;
+  color: #eee;
+  font-family: "Arial Black", Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 }
 
 .pane {
   width: 700px;
-  border: 3px solid #444;
-  background: #1a1a22;
+  border: 4px solid #b38f00;  /* gold MMO trim */
+  border-radius: 12px;
+  background: linear-gradient(#1b1b22, #14141a);
   padding: 20px;
   position: relative;
-  overflow: visible;
+  box-shadow: 0 0 15px #000;
 }
 
 .title {
@@ -24,15 +28,18 @@ body {
   color: gold;
   font-size: 32px;
   margin-bottom: 15px;
+  text-shadow: 1px 1px 2px #000;
 }
 
 .portrait {
   width: 180px;
   height: 180px;
-  border: 4px solid gold;
+  border: 3px solid #b38f00;
   margin: 0 auto 15px auto;
   background-size: cover;
   background-position: center;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #000 inset;
 }
 
 .equipment {
@@ -47,11 +54,14 @@ body {
 .slot {
   width: 100px;
   height: 100px;
-  border: 2px solid #777;
-  background: #222;
+  border: 3px solid #b38f00; /* gold MMO slot frame */
+  border-radius: 6px;
+  background: linear-gradient(#222, #1a1a1a);
   position: relative;
   cursor: pointer;
   overflow: visible;
+  box-shadow: 0 0 5px #000 inset;
+  transition: all 0.2s ease;
 }
 
 .slot img {
@@ -59,17 +69,19 @@ body {
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+  border-radius: 4px;
 }
 
 .slot:hover {
-  border-color: gold;
+  border-color: #fff700; /* bright gold glow */
+  box-shadow: 0 0 10px #fff700 inset, 0 0 12px #fff700;
 }
 
 .tooltip {
   position: absolute;
-  background: black;
-  color: white;
-  border: 1px solid gold;
+  background: #111;
+  color: #fff;
+  border: 2px solid gold;
   padding: 8px;
   font-size: 16px;
   width: 220px;
@@ -78,6 +90,8 @@ body {
   left: 110px;
   top: 0;
   pointer-events: none;
+  border-radius: 6px;
+  box-shadow: 0 0 10px #000;
 }
 
 .slot:hover .tooltip {

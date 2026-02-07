@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Character Pane</title>
+
+<style>
+body {
+  background: #0f0f14;
+  color: #ddd;
+  font-family: Arial;
+}
+
+.pane {
+  width: 420px;
+  border: 3px solid #444;
+  background: #1a1a22;
+  padding: 15px;
+  position: relative;
+}
+
+.title {
+  text-align: center;
+  color: gold;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.equipment {
+  display: grid;
+  grid-template-columns: 1fr 120px 1fr;
+  grid-template-rows: repeat(4, 80px);
+  gap: 10px;
+  align-items: center;
+  justify-items: center;
+}
+
+.char {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  width: 100px;
+  height: 260px;
+  background: #333;
+  border: 2px solid #666;
+}
+
+.slot {
+  width: 70px;
+  height: 70px;
+  border: 2px solid #777;
+  background: #222;
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip {
+  position: absolute;
+  background: black;
+  color: white;
+  border: 1px solid gold;
+  padding: 6px;
+  font-size: 12px;
+  width: 160px;
+  display: none;
+  z-index: 100;
+}
+
+.slot:hover .tooltip {
+  display: block;
+  left: 80px;
+  top: 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="pane">
+  <div class="title" id="name">Loading...</div>
+
+  <div class="equipment">
+    <div class="slot" id="Head">H<div class="tooltip"></div></div>
+    <div class="slot" id="Gloves">G<div class="tooltip"></div></div>
+
+    <div class="char"></div>
+
+    <div class="slot" id="Weapon">W<div class="tooltip"></div></div>
+    <div class="slot" id="Chest">C<div class="tooltip"></div></div>
+  </div>
+</div>
+
+<script>
+const charURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuibkGWLHa5Sz7rJtRjgpZUnG6ZNxgtuxfFqiJB_OsUVqmOaxthADcFLJwmWxfAYvPO2zjFLroosZ1/pub?gid=0&single=true&output=csv";
+const gearURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuibkGWLHa5Sz7rJtRjgpZUnG6ZNxgtuxfFqiJB_OsUVqmOaxthADcFLJwmWxfAYvPO2zjFLroosZ1/pub?gid=457348905&single=true&output=csv";
+
+function parseCSV(text) {
+  const rows = text.trim().split("\n");
+  const data = [];
+  rows.forEach(r => data.push(r.split(",")));
+  return data;
+}
+
+fetch(charURL)
+.then(r => r.text())
+.then(t => {
+  const data = {};
+  parseCSV(t).forEach(row => data[row[0]] = row[1]);
+  document.getElementById("name").innerText = data["Name"];
+});
+
+fetch(gearURL)
+.then(r => r.text())
+.then(t => {
+  const rows = parseCSV(t);
+
+  rows.slice(1).forEach(row => {
+    const slot = row[0];
+    const item = row[1];
+    const desc = row[2];
+
+    const el = document.getElementById(slot);
+    if (!el) return;
+
+    const tip = el.querySelector(".tooltip");
+    tip.innerHTML = `<b>${item}</b><br>${desc}`;
+  });
+});
+</script>
+
+</body>
+</html>

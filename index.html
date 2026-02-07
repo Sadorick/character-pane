@@ -11,7 +11,7 @@ body {
 }
 
 .pane {
-  width: 420px;
+  width: 460px;
   border: 3px solid #444;
   background: #1a1a22;
   padding: 15px;
@@ -25,6 +25,15 @@ body {
   margin-bottom: 10px;
 }
 
+.portrait {
+  width: 120px;
+  height: 120px;
+  border: 3px solid gold;
+  margin: 0 auto 10px auto;
+  background-size: cover;
+  background-position: center;
+}
+
 .equipment {
   display: grid;
   grid-template-columns: 1fr 120px 1fr;
@@ -34,22 +43,24 @@ body {
   justify-items: center;
 }
 
-.char {
-  grid-column: 2;
-  grid-row: 1 / span 4;
-  width: 100px;
-  height: 260px;
-  background: #333;
-  border: 2px solid #666;
-}
-
 .slot {
-  width: 70px;
-  height: 70px;
+  width: 72px;
+  height: 72px;
   border: 2px solid #777;
   background: #222;
   position: relative;
   cursor: pointer;
+  overflow: hidden;
+}
+
+.slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slot:hover {
+  border-color: gold;
 }
 
 .tooltip {
@@ -59,7 +70,7 @@ body {
   border: 1px solid gold;
   padding: 6px;
   font-size: 12px;
-  width: 160px;
+  width: 180px;
   display: none;
   z-index: 100;
 }
@@ -75,17 +86,20 @@ body {
 <body>
 
 <div class="pane">
+
   <div class="title" id="name">Loading...</div>
+  <div class="portrait" id="portrait"></div>
 
   <div class="equipment">
-    <div class="slot" id="Head">H<div class="tooltip"></div></div>
-    <div class="slot" id="Gloves">G<div class="tooltip"></div></div>
+    <div class="slot" id="Head"><img><div class="tooltip"></div></div>
+    <div class="slot" id="Gloves"><img><div class="tooltip"></div></div>
 
-    <div class="char"></div>
+    <div></div>
 
-    <div class="slot" id="Weapon">W<div class="tooltip"></div></div>
-    <div class="slot" id="Chest">C<div class="tooltip"></div></div>
+    <div class="slot" id="Weapon"><img><div class="tooltip"></div></div>
+    <div class="slot" id="Chest"><img><div class="tooltip"></div></div>
   </div>
+
 </div>
 
 <script>
@@ -93,10 +107,7 @@ const charURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuibkGWLHa5Sz7
 const gearURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuibkGWLHa5Sz7rJtRjgpZUnG6ZNxgtuxfFqiJB_OsUVqmOaxthADcFLJwmWxfAYvPO2zjFLroosZ1/pub?gid=457348905&single=true&output=csv";
 
 function parseCSV(text) {
-  const rows = text.trim().split("\n");
-  const data = [];
-  rows.forEach(r => data.push(r.split(",")));
-  return data;
+  return text.trim().split("\n").map(r => r.split(","));
 }
 
 fetch(charURL)
@@ -104,7 +115,10 @@ fetch(charURL)
 .then(t => {
   const data = {};
   parseCSV(t).forEach(row => data[row[0]] = row[1]);
+
   document.getElementById("name").innerText = data["Name"];
+  document.getElementById("portrait").style.backgroundImage =
+    `url(${data["Portrait"]})`;
 });
 
 fetch(gearURL)
@@ -113,12 +127,11 @@ fetch(gearURL)
   const rows = parseCSV(t);
 
   rows.slice(1).forEach(row => {
-    const slot = row[0];
-    const item = row[1];
-    const desc = row[2];
-
+    const [slot, item, desc, icon] = row;
     const el = document.getElementById(slot);
     if (!el) return;
+
+    el.querySelector("img").src = icon;
 
     const tip = el.querySelector(".tooltip");
     tip.innerHTML = `<b>${item}</b><br>${desc}`;
